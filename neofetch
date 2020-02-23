@@ -4147,12 +4147,17 @@ make_thumbnail() {
                     -crop "${size}x${size}+0+0" \
                     -scale "${width}x${height}" \
                     "${thumbnail_dir}/${image_name}"
+
+                composite \
+                    "${thumbnail_dir}/${image_name}" \
+                    "${mask_dir}/${mask_name}.png" \
+                    -compose Difference "${thumbnail_dir}/${image_name}.png"
             ;;
         esac
     fi
 
     # The final image.
-    image="${thumbnail_dir}/${image_name}"
+    image="${thumbnail_dir}/${image_name}.png"
 }
 
 display_image() {
