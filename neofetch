@@ -4078,6 +4078,10 @@ make_thumbnail() {
     # use it later.
     image_name="${crop_mode}-${crop_offset}-${width}-${height}-${image//\/}"
 
+    # Name the mask using variables so we can
+    # use it later.
+    mask_name="${width}-${height}"
+
     # Handle file extensions.
     case ${image##*.} in
         "eps"|"pdf"|"svg"|"gif"|"png")
@@ -4088,6 +4092,14 @@ make_thumbnail() {
     # Create the thumbnail dir if it doesn't exist.
     mkdir -p "${thumbnail_dir:=${XDG_CACHE_HOME:-${HOME}/.cache}/thumbnails/neofetch}"
 
+    # Create the mask dir if it doesn't exist.
+    mkdir -p "${mask_dir:=${XDG_CACHE_HOME:-${HOME}/.cache}/thumbnails/neofetch_mask}"
+
+    if [[ ! -f "${mask_dir}/${mask_name}.png" ]];then
+        # Create a mask with the image size
+        inkscape -e "${mask_dir}/${mask_name}.png" -w "$width" -h "$height" Manjaro-logo.svg &> /dev/null
+    fi
+    
     if [[ ! -f "${thumbnail_dir}/${image_name}" ]]; then
         # Get image size so that we can do a better crop.
         [[ -z "$size" ]] && {
